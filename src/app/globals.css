@@ -2,12 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  height: 100%;
-}
+@layer base {
+  :root {
+    --color-bg-base: #ece9e0;
+    --color-bg-raised: #f5f3ec;
+    --color-bg-inverted: #141413;
+    --color-accent-orange: #d97757;
+    --color-text-primary: #141413;
+    --color-text-secondary: #6b6860;
+    --color-error: #c0453a;
+    --font-heading: var(--font-poppins);
+    --font-display: var(--font-lora);
+    --font-body: var(--font-lora);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --radius-card: 16px;
+    --border-subtle: rgba(20, 20, 19, 0.14);
+    --shadow-card: 0 1px 0 rgba(20, 20, 19, 0.1), 0 16px 44px rgba(20, 20, 19, 0.08);
+  }
 
-body {
-  @apply bg-neutral-50 text-neutral-900;
-}
+  html,
+  body {
+    height: 100%;
+  }
 
+  body {
+    background: var(--color-bg-base);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    text-rendering: geometricPrecision;
+  }
+
+  ::selection {
+    background: rgba(217, 119, 87, 0.25);
+  }
+}

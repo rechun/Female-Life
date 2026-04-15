@@ -4,6 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { formatISO } from "date-fns";
 import { uid } from "@/lib/id";
 import type { ChatMessage, TodayPlan } from "@/lib/types";
+import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import {
   hasOnboarded,
   loadChatHistory,
@@ -95,29 +99,26 @@ export default function ChatPage() {
 
   if (!hasOnboarded()) {
     return (
-      <div className="rounded-lg border bg-white p-6">
-        <div className="text-lg font-semibold">需要先建档</div>
-        <div className="mt-2 text-sm text-neutral-600">请先去“建档”页填写周期与生活系统信息。</div>
-      </div>
+      <PageHeader title="需要先建档" description="请先去“建档”页填写周期与生活系统信息。" />
     );
   }
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-lg border bg-white p-5">
-        <div className="font-semibold">对话入口（MVP）</div>
-        <div className="mt-1 text-sm text-neutral-600">输入一句话，Orchestrator 会调用 Cycle/LifeAdmin 并输出可执行的 Today 建议。</div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader title="Chat" description="一句话把今天说清楚：Orchestrator 会输出可执行的 Today 建议，并支持一键应用。" />
 
-      <div className="rounded-lg border bg-white p-5">
-        <div className="space-y-3">
-          {msgs.length === 0 ? <div className="text-sm text-neutral-600">暂无对话。试试输入：“我这周状态很差，周末还要处理家里事。”</div> : null}
+      <Card>
+        <CardContent>
+          <div className="space-y-3">
+          {msgs.length === 0 ? <div className="text-sm text-flo-text-secondary">暂无对话。试试输入：“我这周状态很差，周末还要处理家里事。”</div> : null}
           {msgs.map((m) => (
             <div key={m.id} className={m.role === "user" ? "text-right" : "text-left"}>
               <div
                 className={
-                  "inline-block max-w-[85%] whitespace-pre-wrap rounded-lg px-3 py-2 text-sm " +
-                  (m.role === "user" ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-900")
+                  "inline-block max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-relaxed " +
+                  (m.role === "user"
+                    ? "bg-flo-bg-inverted text-[rgba(236,233,224,0.96)]"
+                    : "border border-flo-border bg-[rgba(245,243,236,0.65)] text-flo-text-primary")
                 }
               >
                 {m.content}
@@ -127,27 +128,23 @@ export default function ChatPage() {
         </div>
 
         <div className="mt-4 grid gap-2">
-          <textarea
-            className="h-20 w-full rounded border p-3 text-sm"
+          <Textarea
+            className="h-24"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="例如：我这周状态很差，周末还要陪妈妈复查，冰箱也快没东西了..."
           />
-          <div className="flex items-center gap-3">
-            <button onClick={send} className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800">
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="primary" onClick={send}>
               发送
-            </button>
-            <button
-              onClick={applyToToday}
-              className="rounded border bg-white px-4 py-2 text-sm font-medium hover:bg-neutral-50"
-              disabled={!lastPlan}
-            >
+            </Button>
+            <Button variant="secondary" onClick={applyToToday} disabled={!lastPlan}>
               应用到 Today
-            </button>
+            </Button>
           </div>
         </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
-

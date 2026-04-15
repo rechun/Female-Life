@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { hasOnboarded } from "@/lib/storage";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 
 export default function Home() {
   const router = useRouter();
@@ -13,10 +14,11 @@ export default function Home() {
   }, [router]);
 
   return (
-    <div className="rounded-lg border bg-white p-6">
-      <div className="text-lg font-semibold">正在进入 Female Life OS…</div>
-      <div className="mt-2 text-sm text-neutral-600">首次使用会先引导建档。</div>
-    </div>
+    <Card>
+      <CardContent>
+        <CardTitle>正在进入 Female Life OS…</CardTitle>
+        <CardDescription>首次使用会先引导建档。</CardDescription>
+      </CardContent>
+    </Card>
   );
 }
-

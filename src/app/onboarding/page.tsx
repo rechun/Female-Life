@@ -5,6 +5,12 @@ import { useRouter } from "next/navigation";
 import { formatISO } from "date-fns";
 import { uid } from "@/lib/id";
 import type { CycleProfile, LifeSystemProfile, MentalLoadItem, UserProfile } from "@/lib/types";
+import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import {
   loadCycleProfile,
   loadLifeSystemProfile,
@@ -132,89 +138,94 @@ export default function OnboardingPage() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-lg border bg-white p-6">
-        <div className="text-lg font-semibold">初始建档（MVP）</div>
-        <div className="mt-1 text-sm text-neutral-600">
-          目标：3 分钟内完成建档，并立刻生成第一张 Today 面板。数据仅保存在本地浏览器。
-        </div>
-      </div>
+      <PageHeader
+        title="初始建档"
+        description="3 分钟建档：周期 + 常用补货 + 固定缴费。完成后立刻生成第一张 Today 面板（数据仅保存在本地浏览器）。"
+      />
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-lg border bg-white p-5">
-          <div className="font-semibold">个人档案</div>
-          <div className="mt-3 grid gap-3 text-sm">
+        <Card>
+          <CardContent>
+            <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">个人档案</div>
+            <div className="mt-4 grid gap-3 text-sm">
             <label className="grid gap-1">
-              <span className="text-neutral-600">年龄段</span>
-              <select className="rounded border px-3 py-2" value={ageRange} onChange={(e) => setAgeRange(e.target.value as any)}>
+              <span className="text-flo-text-secondary">年龄段</span>
+              <Select value={ageRange} onChange={(e) => setAgeRange(e.target.value as any)}>
                 <option value="18-24">18–24</option>
                 <option value="25-30">25–30</option>
                 <option value="31-38">31–38</option>
                 <option value="39+">39+</option>
-              </select>
+              </Select>
             </label>
 
             <label className="grid gap-1">
-              <span className="text-neutral-600">工作/生活节奏</span>
-              <select className="rounded border px-3 py-2" value={workStyle} onChange={(e) => setWorkStyle(e.target.value as any)}>
+              <span className="text-flo-text-secondary">工作/生活节奏</span>
+              <Select value={workStyle} onChange={(e) => setWorkStyle(e.target.value as any)}>
                 <option value="9-6">朝九晚六</option>
                 <option value="flex">弹性/自由</option>
                 <option value="student">学生</option>
                 <option value="shift">轮班</option>
-              </select>
+              </Select>
             </label>
 
             <label className="grid gap-1">
-              <span className="text-neutral-600">作息偏好</span>
-              <select className="rounded border px-3 py-2" value={sleepPref} onChange={(e) => setSleepPref(e.target.value as any)}>
+              <span className="text-flo-text-secondary">作息偏好</span>
+              <Select value={sleepPref} onChange={(e) => setSleepPref(e.target.value as any)}>
                 <option value="early">早睡型</option>
                 <option value="night_owl">夜猫子</option>
-              </select>
+              </Select>
             </label>
-          </div>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        <div className="rounded-lg border bg-white p-5">
-          <div className="font-semibold">周期档案</div>
-          <div className="mt-3 grid gap-3 text-sm">
+        <Card>
+          <CardContent>
+            <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">周期档案</div>
+            <div className="mt-4 grid gap-3 text-sm">
             <label className="grid gap-1">
-              <span className="text-neutral-600">上次经期开始</span>
-              <input className="rounded border px-3 py-2" type="date" value={lastPeriodStart} onChange={(e) => setLastPeriodStart(e.target.value)} />
-            </label>
-
-            <label className="grid gap-1">
-              <span className="text-neutral-600">平均周期长度（天）</span>
-              <input className="rounded border px-3 py-2" value={cycleLen} onChange={(e) => setCycleLen(e.target.value)} />
+              <span className="text-flo-text-secondary">上次经期开始</span>
+              <Input type="date" value={lastPeriodStart} onChange={(e) => setLastPeriodStart(e.target.value)} />
             </label>
 
             <label className="grid gap-1">
-              <span className="text-neutral-600">常见症状（用“、”分隔）</span>
-              <input className="rounded border px-3 py-2" value={symptoms} onChange={(e) => setSymptoms(e.target.value)} />
+              <span className="text-flo-text-secondary">平均周期长度（天）</span>
+              <Input value={cycleLen} onChange={(e) => setCycleLen(e.target.value)} />
             </label>
-          </div>
-        </div>
+
+            <label className="grid gap-1">
+              <span className="text-flo-text-secondary">常见症状（用“、”分隔）</span>
+              <Input value={symptoms} onChange={(e) => setSymptoms(e.target.value)} />
+            </label>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-lg border bg-white p-5">
-          <div className="font-semibold">生活系统档案：常用补货（staples）</div>
-          <div className="mt-1 text-sm text-neutral-600">每行：物品:建议间隔天数（例如：纸巾:20）</div>
-          <textarea className="mt-3 h-40 w-full rounded border p-3 text-sm" value={staples} onChange={(e) => setStaples(e.target.value)} />
-        </div>
+        <Card>
+          <CardContent>
+            <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">常用补货</div>
+            <div className="mt-2 text-sm text-flo-text-secondary">每行：物品:建议间隔天数（例如：纸巾:20）</div>
+            <Textarea className="mt-4 h-40" value={staples} onChange={(e) => setStaples(e.target.value)} />
+          </CardContent>
+        </Card>
 
-        <div className="rounded-lg border bg-white p-5">
-          <div className="font-semibold">生活系统档案：固定缴费/续费（bills）</div>
-          <div className="mt-1 text-sm text-neutral-600">每行：名称:monthly:到期日（例如：宽带:monthly:10）</div>
-          <textarea className="mt-3 h-40 w-full rounded border p-3 text-sm" value={bills} onChange={(e) => setBills(e.target.value)} />
-        </div>
+        <Card>
+          <CardContent>
+            <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">固定缴费/续费</div>
+            <div className="mt-2 text-sm text-flo-text-secondary">每行：名称:monthly:到期日（例如：宽带:monthly:10）</div>
+            <Textarea className="mt-4 h-40" value={bills} onChange={(e) => setBills(e.target.value)} />
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="flex items-center gap-3">
-        <button onClick={onSave} className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800">
+      <div className="flex flex-wrap items-center gap-3">
+        <Button variant="primary" onClick={onSave}>
           保存并生成 Today 面板
-        </button>
-        <div className="text-sm text-neutral-600">提示：你随时可以回来修改建档信息。</div>
+        </Button>
+        <div className="text-sm text-flo-text-secondary">提示：你随时可以回来修改建档信息。</div>
       </div>
     </div>
   );
 }
-

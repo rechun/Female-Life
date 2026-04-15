@@ -3,6 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { formatISO } from "date-fns";
 import type { DailyCheckin, LifeTask, TodayPlan } from "@/lib/types";
+import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Select } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import {
   hasOnboarded,
   loadCycleProfile,
@@ -19,10 +24,12 @@ import { runOrchestrator } from "@/lib/agents/orchestrator";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border bg-white p-5">
-      <div className="font-semibold">{title}</div>
-      <div className="mt-3">{children}</div>
-    </div>
+    <Card>
+      <CardContent>
+        <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">{title}</div>
+        <div className="mt-4">{children}</div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -94,78 +101,76 @@ export default function TodayPage() {
 
   if (!hasOnboarded()) {
     return (
-      <div className="rounded-lg border bg-white p-6">
-        <div className="text-lg font-semibold">需要先建档</div>
-        <div className="mt-2 text-sm text-neutral-600">请先去“建档”页填写周期与生活系统信息。</div>
-      </div>
+      <PageHeader title="需要先建档" description="请先去“建档”页填写周期与生活系统信息。" />
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <PageHeader title="Today" description="快速打点 + 一句话生成可执行面板：重点 1–3、风险、避免事项与自我照顾。" />
       <Section title="快速打点（用于更准确的节律判断）">
         <div className="grid gap-3 text-sm md:grid-cols-3">
           <label className="grid gap-1">
-            <span className="text-neutral-600">睡眠质量</span>
-            <select className="rounded border px-3 py-2" value={sleepQuality} onChange={(e) => setSleepQuality(Number(e.target.value) as any)}>
+            <span className="text-flo-text-secondary">睡眠质量</span>
+            <Select value={sleepQuality} onChange={(e) => setSleepQuality(Number(e.target.value) as any)}>
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label className="grid gap-1">
-            <span className="text-neutral-600">疲劳</span>
-            <select className="rounded border px-3 py-2" value={fatigue} onChange={(e) => setFatigue(Number(e.target.value) as any)}>
+            <span className="text-flo-text-secondary">疲劳</span>
+            <Select value={fatigue} onChange={(e) => setFatigue(Number(e.target.value) as any)}>
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
           <label className="grid gap-1">
-            <span className="text-neutral-600">情绪</span>
-            <select className="rounded border px-3 py-2" value={mood} onChange={(e) => setMood(Number(e.target.value) as any)}>
+            <span className="text-flo-text-secondary">情绪</span>
+            <Select value={mood} onChange={(e) => setMood(Number(e.target.value) as any)}>
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
               ))}
-            </select>
+            </Select>
           </label>
         </div>
       </Section>
 
       <Section title="一句话进入（对话式入口）">
         <div className="grid gap-3">
-          <textarea className="h-24 w-full rounded border p-3 text-sm" value={text} onChange={(e) => setText(e.target.value)} />
+          <Textarea className="h-24" value={text} onChange={(e) => setText(e.target.value)} />
           <div className="flex items-center gap-3">
-            <button onClick={generate} className="rounded bg-neutral-900 px-4 py-2 text-sm font-medium text-white hover:bg-neutral-800">
+            <Button variant="primary" onClick={generate}>
               生成 Today 面板
-            </button>
-            <div className="text-sm text-neutral-600">提示：包含“很累/不想动”等会自动进入低能量收缩模式。</div>
+            </Button>
+            <div className="text-sm text-flo-text-secondary">提示：包含“很累/不想动”等会自动进入低能量收缩模式。</div>
           </div>
         </div>
       </Section>
 
       <Section title="Today 面板（系统输出）">
         {!plan ? (
-          <div className="text-sm text-neutral-600">点击“生成 Today 面板”后，这里会出现卡片化结果。</div>
+          <div className="text-sm text-flo-text-secondary">点击“生成 Today 面板”后，这里会出现卡片化结果。</div>
         ) : (
           <div className="space-y-3">
             <div className="grid gap-3 md:grid-cols-2">
-              <div className="rounded border p-4">
-                <div className="text-sm font-semibold">今日状态</div>
-                <div className="mt-2 text-sm text-neutral-700">
+              <div className="rounded-card border border-flo-border bg-[rgba(245,243,236,0.55)] p-5">
+                <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">今日状态</div>
+                <div className="mt-2 text-sm text-flo-text-secondary">
                   节律：{plan.cyclePhaseLabel} · {plan.energy === "high" ? "高能量" : plan.energy === "mid" ? "中等能量" : "低能量"}
                 </div>
-                <div className="mt-2 text-sm text-neutral-700">风险：{plan.risks.length ? plan.risks.join("、") : "无明显风险"}</div>
+                <div className="mt-2 text-sm text-flo-text-secondary">风险：{plan.risks.length ? plan.risks.join("、") : "无明显风险"}</div>
               </div>
-              <div className="rounded border p-4">
-                <div className="text-sm font-semibold">自我照顾建议</div>
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-700">
+              <div className="rounded-card border border-flo-border bg-[rgba(245,243,236,0.55)] p-5">
+                <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">自我照顾建议</div>
+                <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-flo-text-secondary">
                   {plan.selfCare.map((x) => (
                     <li key={x}>{x}</li>
                   ))}
@@ -173,56 +178,55 @@ export default function TodayPage() {
               </div>
             </div>
 
-            <div className="rounded border p-4">
-              <div className="text-sm font-semibold">今日重点 1–3 件事</div>
-              <div className="mt-2 space-y-2">
+            <div className="rounded-card border border-flo-border bg-[rgba(245,243,236,0.55)] p-5">
+              <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">今日重点 1–3 件事</div>
+              <div className="mt-3 space-y-2">
                 {plan.top3.map((t) => (
-                  <div key={t.id} className="flex items-start justify-between gap-3 rounded border bg-neutral-50 p-3">
+                  <div
+                    key={t.id}
+                    className="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-flo-border bg-flo-bg-raised p-4"
+                  >
                     <div>
-                      <div className="text-sm font-medium">{t.title}</div>
-                      <div className="mt-1 text-xs text-neutral-600">
+                      <div className="text-sm font-medium text-flo-text-primary">{t.title}</div>
+                      <div className="mt-1 text-xs text-flo-text-secondary">
                         {t.priority === "must" ? "必须做" : t.priority === "should" ? "最好做" : "可选做"}
                       </div>
                     </div>
-                    <button
-                      className="rounded border bg-white px-3 py-1 text-xs hover:bg-neutral-100"
-                      onClick={() => markDone(t.title)}
-                      disabled={t.status === "done"}
-                    >
+                    <Button variant={t.status === "done" ? "secondary" : "ghost"} size="sm" onClick={() => markDone(t.title)} disabled={t.status === "done"}>
                       {t.status === "done" ? "已完成" : "标记完成"}
-                    </button>
+                    </Button>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="rounded border p-4">
-              <div className="text-sm font-semibold">提醒事项（简版）</div>
-              <div className="mt-2 space-y-2 text-sm text-neutral-700">
+            <div className="rounded-card border border-flo-border bg-[rgba(245,243,236,0.55)] p-5">
+              <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">提醒事项（简版）</div>
+              <div className="mt-3 space-y-2 text-sm text-flo-text-secondary">
                 {plan.cards.filter((c) => c.cardType === "reminder").length === 0 ? (
-                  <div className="text-sm text-neutral-600">暂无提醒（可在建档里补充固定缴费/补货清单）。</div>
+                  <div className="text-sm text-flo-text-secondary">暂无提醒（可在建档里补充固定缴费/补货清单）。</div>
                 ) : (
                   plan.cards
                     .filter((c) => c.cardType === "reminder")
                     .map((c) => (
-                      <div key={c.id} className="rounded border bg-white p-3">
-                        <div className="font-medium">{c.title}</div>
-                        {c.body ? <div className="mt-1 text-neutral-600">{c.body}</div> : null}
+                      <div key={c.id} className="rounded-xl border border-flo-border bg-flo-bg-raised p-4">
+                        <div className="text-sm font-medium text-flo-text-primary">{c.title}</div>
+                        {c.body ? <div className="mt-2 text-sm text-flo-text-secondary">{c.body}</div> : null}
                       </div>
                     ))
                 )}
               </div>
             </div>
 
-            <div className="rounded border p-4">
-              <div className="text-sm font-semibold">卡片（用于作品展示）</div>
-              <div className="mt-2 grid gap-2">
+            <div className="rounded-card border border-flo-border bg-[rgba(245,243,236,0.55)] p-5">
+              <div className="font-heading text-sm font-semibold tracking-wide text-flo-text-primary">卡片（用于作品展示）</div>
+              <div className="mt-3 grid gap-2">
                 {plan.cards.map((c) => (
-                  <div key={c.id} className="rounded border bg-white p-3">
-                    <div className="text-sm font-medium">{c.title}</div>
-                    {c.body ? <div className="mt-1 text-sm text-neutral-700">{c.body}</div> : null}
+                  <div key={c.id} className="rounded-xl border border-flo-border bg-flo-bg-raised p-4">
+                    <div className="text-sm font-medium text-flo-text-primary">{c.title}</div>
+                    {c.body ? <div className="mt-2 text-sm text-flo-text-secondary">{c.body}</div> : null}
                     {typeof c.confidence === "number" ? (
-                      <div className="mt-1 text-xs text-neutral-500">置信度：{Math.round(c.confidence * 100)}%</div>
+                      <div className="mt-2 text-xs text-flo-text-secondary">置信度：{Math.round(c.confidence * 100)}%</div>
                     ) : null}
                   </div>
                 ))}
